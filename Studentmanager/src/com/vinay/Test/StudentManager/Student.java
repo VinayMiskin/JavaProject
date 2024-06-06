@@ -3,7 +3,7 @@ package com.vinay.Test.StudentManager;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Student {
+public class Student implements Comparable<Student> {
 	private int id;
 	private String name;
 	private Date dob;
@@ -77,6 +77,12 @@ public class Student {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(Student o) {
+		// TODO Auto-generated method stub
+		return this.id-o.id;
 	} 
 	
 	
