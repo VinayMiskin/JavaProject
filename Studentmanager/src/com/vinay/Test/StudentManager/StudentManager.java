@@ -3,6 +3,7 @@ package com.vinay.Test.StudentManager;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -12,35 +13,79 @@ public class StudentManager {
 	static List<Student> studentList;
 	static String path;
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		studentList=new ArrayList<>();
-		while (true) {
-			Scanner sc1=new Scanner(System.in);
-			
-			System.out.println("Enter 1 to add Student");
-			System.out.println("Enter 2 to remove Student");
-			System.out.println("Enter 3 to search for student");
-			System.out.println("Enter 4 to get the list");
-			
-			int in=sc1.nextInt();
-			switch(in) {
-			case 1:
-				add();
-				break;
-			case 2:
-				delete();
-				break;
-			case 3:
-				search();
-				break;
-			case 4:
-				System.out.println("The Student List contains"+studentList.size()+" students");
+		
+		try {
+			if(args[0]==null)
+				throw new IllegalArgumentException("The given path is empty");
+			path=args[0];
+			studentList=new ArrayList<>();
+			StudentFileManager.getList(path);
+			System.out.println("The Student List contains "+studentList.size()+" students");
 				for (Student student : studentList) {
-					
 					System.out.println(student);
 				}
-				break;
-			}
+				System.out.println();
+				while (true) {
+					
+					
+					Scanner sc1=new Scanner(System.in);
+					
+					System.out.println("Enter 1 to add Student");
+					System.out.println("Enter 2 to remove Student");
+					System.out.println("Enter 3 to search for student");
+					System.out.println("Enter 4 to get the list");
+					
+					int input=sc1.nextInt() ;
+					switch(input) {
+					case 1:
+						add();
+						break;
+					case 2:
+						delete();
+						break;
+					case 3:
+						search();
+						break;
+					case 4:
+						System.out.println("The Student List contains "+studentList.size()+" students");
+						for (Student student : studentList) {
+							
+							System.out.println(student);
+						}
+						System.out.println();
+						System.out.println("Enter 1 to sort the student by their name");
+						System.out.println("Enter 2 to sort the student by their birth");
+						System.out.println("Enter 0 to go back to main menu");
+						int in=sc1.nextInt();
+						if(in==0)
+							break;
+						else if(in==1) {
+							Collections.sort(studentList, new StudentNameComparator());
+							for (Student student : studentList) {
+								System.out.println(student);
+							}
+							System.out.println();
+						}
+						else if(in==2) {
+							Collections.sort(studentList, new StudentAgeComparator());
+							for (Student student : studentList) {
+								System.out.println(student);
+							}
+							System.out.println();
+						}
+						else
+							throw new IllegalArgumentException("Invalid Input");
+						
+						Collections.sort(studentList);
+						break;
+						default:
+							System.out.println("Please enter valid data");
+							break;
+					}
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
 		}
 		
 	}
@@ -48,18 +93,20 @@ public class StudentManager {
 		while(true) {
 			try {
 				Scanner sc1=new Scanner(System.in);
-				System.out.println("Enter the student name that needs to deleted");
+				System.out.println("Enter the student name that needs to be searched");
 				String name=sc1.nextLine().toLowerCase();
 				List<Student> list=new ArrayList<>();
 				for (Student student : studentList) {
 					if(student.getName().toLowerCase().contains(name))
-						list.add(student);
+						System.out.println(student);
 				}
+				System.out.println();
 				
 			}
 			catch (Exception e) {
 				e.printStackTrace();
 			}
+			return;
 		}
 	}
 	
@@ -90,6 +137,7 @@ public class StudentManager {
 					else {
 						studentList.remove(list.get(0).getId()-1);
 						rearrangeId(list.get(0).getId());
+						StudentFileManager.updateList(path,studentList);
 						return;
 					}
 				}
@@ -134,7 +182,7 @@ public class StudentManager {
 				student.setId(studentList.size()+1);
 				System.out.println(student);
 				studentList.add(student);
-				
+				StudentFileManager.addStudent(student,path);
 				return;
 			} catch (Exception e) {
 				e.printStackTrace();

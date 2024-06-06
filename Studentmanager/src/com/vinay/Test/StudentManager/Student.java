@@ -8,14 +8,15 @@ public class Student implements Comparable<Student> {
 	private String name;
 	private Date dob;
 	
-	public String save() {
+	public String saveToFile() {
 		SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
 		return id+":"+name+":"+sdf.format(dob);
 	}
 	
 	@Override
 	public String toString() {
-		return "Student [id=" + id + ", name=" + name + ", dob=" + dob + "]";
+		SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
+		return "Student [id=" + id + ", name=" + name + ", dob=" + sdf.format(dob) + "]";
 	}
 	public Student(int id, String name, Date dob) {
 		super();
